@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/denih/CLionProjects/Tema/sortari.cpp
+iostream
+-
+vector
+-
+random
+-
+chrono
+-
+algorithm
+-
+
