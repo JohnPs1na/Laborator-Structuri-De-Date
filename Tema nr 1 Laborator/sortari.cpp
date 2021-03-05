@@ -235,7 +235,7 @@ void generate_almost_sorted_array(int A[], int N, int M)
 void generate_sorted_array(int A[], int N, int M)
 {
     generate_random_array(A,N,M);
-    count_sort(A,N);
+    sort(A,A+N);
 }
 
 void generate_sorted_decreasing(int A[],int N,int M)
