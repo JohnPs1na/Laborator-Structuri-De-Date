@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/denih/CLionProjects/Tema
+# Install script for directory: C:/Users/denih/CLionProjects/Tema nr 1 Laborator
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/denih/CLionProjects/Tema/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/denih/CLionProjects/Tema nr 1 Laborator/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

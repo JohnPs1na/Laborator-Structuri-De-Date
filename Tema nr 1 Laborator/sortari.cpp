@@ -138,14 +138,17 @@ void radix_sort(int a[], int len) {
     delete[] a2;
 }
 
-//Quick Sort
-//versiunea care da stack overflow p/u elemente > 10 ^ 6
+
+//varianta slaba de quicksort cu pivot elementar luat ca primul element din array, va da eroare de stack overflow
+//pentru listele sortate, aproape sortate, si sortate descrescator cu un nr de elemente mai mare decat 10^5
+
+//Aici e varianta mai buna cu pivotul ales ca fiind elementul din mijloc
 void quick_sort(int a[], int st,int dr)
 {
     if(st<dr){
         int i = st;
         int j = dr;
-        int pivot = a[st];
+        int pivot = a[(st+dr)/2];
 
         while(i<j){
             while(a[i]<pivot)
@@ -160,12 +163,10 @@ void quick_sort(int a[], int st,int dr)
                 j--;
             }
         }
-
         quick_sort(a,st,j);
         quick_sort(a,i,dr);
     }
 }
-
 
 int medOf3(int a[],int st,int dr)
 {
@@ -177,6 +178,8 @@ int medOf3(int a[],int st,int dr)
     else
         return mij;
 }
+
+//Aici e varianta cu pivotul ales ca fiind mediana din 3
 
 void quick_sortMED3(int a[], int st, int dr) {
 
@@ -329,12 +332,6 @@ void runRadix(int l[], int len)
 }
 void runQuick(int l[], int len) {
 
-    if(len>=100000)
-    {
-        cout<<"Complexitate - O(n^2) -> Stack Overflow pentru vectori sortati si aproape sortati\n";
-        return;
-    }
-
 
     int* copie = new int[len];
     copy_list(l, copie, 0, len);
@@ -353,12 +350,6 @@ void runQuick(int l[], int len) {
 
 void runQuickMED3(int l[], int len)
 {
-    if(len>=100000)
-    {
-        cout<<"Complexitate - O(n^2) -> Stack Overflow pentru vectori sortati si aproape sortati\n";
-        return;
-    }
-
     int* copie = new int[len];
     copy_list(l, copie, 0, len);
     cout << "Quick Sort Med 3: ";
@@ -441,7 +432,6 @@ int main()
 
         delete[] test;
     }
-
     return 0;
 }
 

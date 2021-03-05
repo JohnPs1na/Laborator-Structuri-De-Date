@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/denih/CLionProjects/Tema/sortari.cpp" "C:/Users/denih/CLionProjects/Tema/cmake-build-debug/CMakeFiles/Tema.dir/sortari.cpp.obj"
+  "C:/Users/denih/CLionProjects/Tema nr 1 Laborator/sortari.cpp" "C:/Users/denih/CLionProjects/Tema nr 1 Laborator/cmake-build-debug/CMakeFiles/Tema.dir/sortari.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
