@@ -3,6 +3,7 @@
 #include <random>
 #include <chrono>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 
 //Utility functions here
@@ -243,6 +244,15 @@ void generate_sorted_decreasing(int A[],int N,int M)
     generate_random_array(A,N,M);
     sort(A,A+N,greater<int>());
 }
+
+void generate_constant(int A[],int N, int M)
+{
+    int x = rand() % M+1;
+    for(int i = 0;i<N;i++)
+    {
+        A[i] = x;
+    }
+}
 void runBubble(int l[], int len) {
     if(len>=100000)
     {
@@ -428,6 +438,10 @@ int main()
 
         cout<< "SORTED DECREASING:\n";
         generate_sorted_decreasing(test,n,m);
+        sorteaza_tot(test,n);
+
+        cout<<"CONSTANT:\n";
+        generate_constant(test,n,m);
         sorteaza_tot(test,n);
 
         delete[] test;
