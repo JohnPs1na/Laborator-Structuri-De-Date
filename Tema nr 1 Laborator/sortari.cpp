@@ -1,13 +1,39 @@
-#include <iostream>
-#include <vector>
-#include <random>
-#include <chrono>
-#include <algorithm>
-#include <ctime>
+#include <bits/stdc++.h>
+
 using namespace std;
 
 //Utility functions here
 
+static const char alphanum[] =
+        "0123456789"
+        "!@#$%^&*"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+int stringLength = sizeof(alphanum) - 1;
+
+char genRandom()  // Random string generator function.
+{
+
+    return alphanum[rand() % stringLength];
+}
+
+void generate_random_strArr(string a[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        int rnd = rand() % 21;
+        char* z = new char[rnd];
+
+        for (int j = 0; j < rnd; j++)
+        {
+            z[j] = genRandom();
+        }
+
+        a[i] = z;
+        delete[] z;
+    }
+}
 int max(int a[], int len) {
     int maxi = a[0];
     for (int i = 0; i < len; i++)
@@ -16,29 +42,35 @@ int max(int a[], int len) {
     return maxi;
 }
 
-void copy_list(int a[], int b[], int st, int dr)
+template<class T>
+void copy_list(T a[], T b[], int st, int dr)
 {
     for (int i = st; i < dr; i++)
         b[i] = a[i];
 }
-bool test_sort(int a[], int len)
+
+template<class T>
+bool test_sort(T a[], int len)
 {
     for (int i = 1; i < len; i++)
         if (a[i] < a[i - 1])
             return false;
     return true;
 }
-void print_Array(int a[], int len)
+
+template<class T>
+void print_Array(T a[], int len)
 {
     for (int i = 0; i < len; i++)
-        cout << a[i] << ' ';
+        cout << a[i] << endl;
     cout << '\n';
 }
 
 //TEMA se incepe de aici
 
 // bubble sort
-void bubble_sort(int a[], int len)
+template<class T>
+void bubble_sort(T a[], int len)
 {
     for (int i = 0; i < len; i++)
         for (int j = 0; j < len - i - 1; j++)
@@ -63,7 +95,8 @@ void count_sort(int a[], int len)
 }
 
 // insert sort
-void insert_sort(int a[], int len)
+template<class T>
+void insert_sort(T a[], int len)
 {
     for (int i = 1; i < len; i++) {
         int k = i;
@@ -75,20 +108,21 @@ void insert_sort(int a[], int len)
 }
 
 // Merge Sort
-void merge_sort(int a[], int len)
+template<class T>
+void merge_sort(T a[], int len)
 {
     if (len <= 1)
         return;
     int mid = len / 2;
-    int* l = a;
-    int* r = a + mid;
+    T* l = a;
+    T* r = a + mid;
     int len1 = mid;
     int len2 = len - len1;
 
     merge_sort(l, len1);
     merge_sort(r, len2);
 
-    int *aux = new int[len];
+    T *aux = new T[len];
     int poz1, poz2, idx;
     poz1 = poz2 = idx = 0;
     while (poz1 < len1 && poz2 < len2)
@@ -144,12 +178,13 @@ void radix_sort(int a[], int len) {
 //pentru listele sortate, aproape sortate, si sortate descrescator cu un nr de elemente mai mare decat 10^5
 
 //Aici e varianta mai buna cu pivotul ales ca fiind elementul din mijloc
-void quick_sort(int a[], int st,int dr)
+template<class T>
+void quick_sort(T a[], int st,int dr)
 {
     if(st<dr){
         int i = st;
         int j = dr;
-        int pivot = a[(st+dr)/2];
+        T pivot = a[(st+dr)/2];
 
         while(i<j){
             while(a[i]<pivot)
@@ -169,18 +204,20 @@ void quick_sort(int a[], int st,int dr)
     }
 }
 
+
 int medOf3(int a[],int st,int dr)
 {
     int mij = a[(st+dr)/2];
-    if((st>mij) xor (st>dr))
-        return st;
-    else if((dr>mij) xor (dr>st))
-        return dr;
+    if((a[st]>mij) xor (a[st]>a[dr]))
+        return a[st];
+    else if((a[dr]>mij) xor (a[dr]>a[st]))
+        return a[dr];
     else
         return mij;
 }
 
 //Aici e varianta cu pivotul ales ca fiind mediana din 3
+
 
 void quick_sortMED3(int a[], int st, int dr) {
 
@@ -253,17 +290,19 @@ void generate_constant(int A[],int N, int M)
         A[i] = x;
     }
 }
-void runBubble(int l[], int len) {
+
+template<class T>
+void runBubble(T l[], int len) {
     if(len>=100000)
     {
         cout<<"Bubble: Prea Mult Timp\n";
         return;
     }
-    int* copie = new int[len];
+    T* copie = new T[len];
     copy_list(l, copie, 0, len);
     cout << "Bubble Sort: ";
     auto start = chrono::high_resolution_clock::now();
-    bubble_sort(copie, len);
+    bubble_sort<T>(copie, len);
     auto stop = chrono::high_resolution_clock::now();
     chrono::duration<float> duration = stop - start;
     if (test_sort(copie, len))
@@ -274,17 +313,19 @@ void runBubble(int l[], int len) {
 
 
 }
-void runInsert(int l[], int len) {
+
+template<class T>
+void runInsert(T l[], int len) {
     if(len>=100000)
     {
         cout<<"Insert: Prea Mult Timp\n";
         return;
     }
-    int* copie = new int[len];
+    T* copie = new T[len];
     copy_list(l, copie, 0, len);
     cout << "Insert Sort: ";
     auto start = chrono::high_resolution_clock::now();
-    insert_sort(copie, len);
+    insert_sort<T>(copie, len);
     auto stop = chrono::high_resolution_clock::now();
     chrono::duration<float> duration = stop - start;
     if (test_sort(copie, len))
@@ -309,12 +350,13 @@ void runCount(int l[], int len) {
     delete[] copie;
 
 }
-void runMerge(int l[], int len) {
-    int* copie = new int[len];
+template<class T>
+void runMerge(T l[], int len) {
+    T* copie = new T[len];
     copy_list(l, copie, 0, len);
     cout << "Merge Sort: ";
     auto start = chrono::high_resolution_clock::now();
-    merge_sort(copie, len);
+    merge_sort<T>(copie, len);
     auto stop = chrono::high_resolution_clock::now();
     chrono::duration<float> duration = stop - start;
     if (test_sort(copie, len))
@@ -324,6 +366,8 @@ void runMerge(int l[], int len) {
     delete[] copie;
 
 }
+
+
 void runRadix(int l[], int len)
 {
     int* copie = new int[len];
@@ -340,6 +384,7 @@ void runRadix(int l[], int len)
     delete[] copie;
 
 }
+
 void runQuick(int l[], int len) {
 
 
@@ -358,6 +403,7 @@ void runQuick(int l[], int len) {
 
 }
 
+
 void runQuickMED3(int l[], int len)
 {
     int* copie = new int[len];
@@ -374,10 +420,10 @@ void runQuickMED3(int l[], int len)
     delete[] copie;
 
 }
-
-void runSTL(int l[],int len)
+template <class T>
+void runSTL(T l[],int len)
 {
-    int* copie = new int[len];
+    T* copie = new T[len];
     copy_list(l, copie, 0, len);
     cout << "STL Sort: ";
     auto start = chrono::high_resolution_clock::now();
@@ -391,7 +437,8 @@ void runSTL(int l[],int len)
     delete[] copie;
     cout << endl;
 }
-void sorteaza_tot(int l[],int len) {
+
+void sorteaza_totINT(int *l, int len) {
     runBubble(l, len);
     runInsert(l, len);
     runCount(l, len);
@@ -402,14 +449,23 @@ void sorteaza_tot(int l[],int len) {
     runSTL(l,len);
 }
 
+template<class T>
+void sorteaza_totSTRING(T *l, int len) {
+    runBubble<T>(l, len);
+    runInsert<T>(l, len);
+    runMerge<T>(l, len);
+    runSTL<T>(l,len);
+}
+
 
 int main()
 {
+
     srand(time(NULL));
 
     int testNumber;
 
-    cout << "introduceti numarul de teste pe care doriti sa il efectuati: ";
+    cout << "introduceti numarul de teste pe INT pe care doriti sa il efectuati: ";
     cin >> testNumber;
     cout << '\n';
 
@@ -426,27 +482,49 @@ int main()
         int* test = new int[n];
         cout << "RANDOM:\n";
         generate_random_array(test, n, m);
-        sorteaza_tot(test,n);
+        sorteaza_totINT(test, n);
 
         cout << "ALMOST SORTED:\n";
         generate_almost_sorted_array(test, n, m);
-        sorteaza_tot(test, n);
+        sorteaza_totINT(test, n);
 
         cout << "SORTED:\n";
         generate_sorted_array(test, n, m);
-        sorteaza_tot(test, n);
+        sorteaza_totINT(test, n);
 
         cout<< "SORTED DECREASING:\n";
         generate_sorted_decreasing(test,n,m);
-        sorteaza_tot(test,n);
+        sorteaza_totINT(test, n);
 
         cout<<"CONSTANT:\n";
         generate_constant(test,n,m);
-        sorteaza_tot(test,n);
+        sorteaza_totINT(test, n);
 
         delete[] test;
     }
-    return 0;
+
+    int testStrings;
+
+    cout << "introduceti numarul de teste pe STRINGURI pe care doriti sa il efectuati: ";
+    cin >> testStrings;
+    cout << '\n';
+
+    for (int i = 0; i < testStrings; i++)
+    {
+        int n;
+        cout << "introduceti numarul de elemente pentru testul " << i + 1 << " :";
+        cin >> n;
+
+        cout << "\nAcum generam liste\n";
+
+        string* test = new string[n];
+        cout << "RANDOM:\n";
+        generate_random_strArr(test, n);
+        sorteaza_totSTRING(test, n);
+
+
+        delete[] test;
+    }
+
+
 }
-
-
