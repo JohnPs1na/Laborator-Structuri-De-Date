@@ -178,13 +178,13 @@ void radix_sort(int a[], int len) {
 //pentru listele sortate, aproape sortate, si sortate descrescator cu un nr de elemente mai mare decat 10^5
 
 //Aici e varianta mai buna cu pivotul ales ca fiind elementul din mijloc
-template<class T>
-void quick_sort(T a[], int st,int dr)
+
+void quick_sort(int a[], int st,int dr)
 {
     if(st<dr){
         int i = st;
         int j = dr;
-        T pivot = a[(st+dr)/2];
+        int pivot = a[(st+dr)/2];
 
         while(i<j){
             while(a[i]<pivot)
