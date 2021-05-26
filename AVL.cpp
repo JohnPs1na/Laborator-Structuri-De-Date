@@ -1,12 +1,9 @@
-
 #include <iostream>
 #include <fstream>
-
 using namespace std;
 
 ifstream fin("abce.in");
 ofstream fout("abce.out");
-
 struct Node {
 	int val;
 	Node* left;
@@ -15,25 +12,25 @@ struct Node {
 
 	Node(int x = 0) {
 		val = x;
-		left = NULL;
-		right = NULL;
+		left = nullptr;
+		right = nullptr;
 		height = 1;
+
 	}
 };
 
-int getHeight(Node* a) {
-	if (a == NULL) {
+int getHeight(Node* root) {
+	if (root == nullptr) {
 		return 0;
 	}
-	return 1 + max(getHeight(a->left), getHeight(a->right));
+	return root->height;
 }
 
-
-int balanceFactor(Node* a) {
-	if (a == NULL) {
+int balanceFactor(Node* root) {
+	if (root == nullptr) {
 		return 0;
 	}
-	return getHeight(a->left) - getHeight(a->right);
+	return getHeight(root->left) - getHeight(root->right);
 }
 
 Node* rightRotation(Node*& a) {
@@ -54,110 +51,44 @@ Node* leftRotation(Node*& a) {
 	return b;
 }
 
-
 void insert(Node*& root, int x) {
-	if (root == NULL) {
+	if (root == nullptr) {
 		root = new Node(x);
-	}
-	if (x < root->val) {
-		if (root->left == NULL) {
-			root->left = new Node(x);
-			return;
-		}
-		else {
-			insert(root->left, x);
-		}
-	}
-	else if (x > root->val) {
-		if (root->right == NULL) {
-			root->right = new Node(x);
-			return;
-		}
-		else {
-			insert(root->right, x);
-		}
-	}
-
-	root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-	int balance = balanceFactor(root);
-
-	//left left
-	if (balance > 1 && x < root->left->val) {
-		root = rightRotation(root);
-	}
-
-	//right right
-	else if (balance < -1 && x > root->right->val) {
-		root = leftRotation(root);
-	}
-
-	//left right
-	else if (balance > 1 && x > root->left->val) {
-		root->left = leftRotation(root->left);
-		root = rightRotation(root);
-	}
-	//right left
-	else if (balance < -1 && x < root->right->val) {
-		root->right = rightRotation(root->right);
-		root = leftRotation(root);
-	}
-}
-
-int seeIfIn(Node* root, int val) {
-	if (root == NULL)
-		return 0;
-	if (root->val == val)
-		return 1;
-	if (root->val < val)
-		return seeIfIn(root->right, val);
-	return seeIfIn(root->left, val);
-}
-
-Node* minVal(Node* root) {
-	if (root->left == NULL)
-		return root;
-	return minVal(root->left);
-}
-
-Node* maxVal(Node* root) {
-	if (root->right == NULL)
-		return root;
-	return maxVal(root->right);
-}
-
-int succesor(Node* root, int val) {
-	if (root == NULL)
-		return 2147483647;
-	if (root->val == val)
-		return val;
-	if (val < root->val) {
-		return min(root->val, succesor(root->left, val));
-	}
-	else
-		return succesor(root->right, val);
-}
-
-int predecesor(Node* root, int val) {
-
-	if (root == NULL) {
-		return -2147483648;
-	}
-	if (root->val == val) {
-		return val;
-	}
-	if (val < root->val) {
-		return predecesor(root->left, val);
-	}
-	else
-		return max(root->val, predecesor(root->right, val));
-}
-void inorderBest(Node* root, int x, int y) {
-	if (root == NULL) {
 		return;
 	}
-	inorderBest(root->left, x, y);
-	if (root->val >= x && root->val <= y) fout << root->val << ' ';
-	inorderBest(root->right, x, y);
+	if (x < root->val) 
+		insert(root->left, x);
+	else if (x > root->val)
+		insert(root->right, x);
+	
+	root->height = 1 + max(getHeight(root->left), getHeight(root->right));
+	int bf = balanceFactor(root);
+
+	if (bf > 1) {
+		if (root->left->val > x)
+			root = rightRotation(root);
+		else {
+			root->left	= leftRotation(root->left);
+			root = rightRotation(root);
+		}
+	}
+	else if (bf < -1) {
+		if (root->right->val < x) {
+			root = leftRotation(root);
+		}
+		else {
+			root->right = rightRotation(root->right);
+			root = leftRotation(root);
+		}
+	}
+}
+
+Node* getMin(Node* root) {
+	Node* curr = root;
+	while (curr->left) {
+		curr = curr->left;
+	}
+	return curr;
 }
 
 
@@ -191,7 +122,7 @@ void remove(Node*& root, int val) {
 			delete aux;
 		}
 		else {
-			Node* aux = minVal(root->right);
+			Node* aux = getMin(root->right);
 			root->val = aux->val;
 			remove(root->right, aux->val);
 		}
@@ -204,25 +135,78 @@ void remove(Node*& root, int val) {
 	int balance = balanceFactor(root);
 	int bfl = balanceFactor(root->left);
 	int bfr = balanceFactor(root->right);
-	//left left
+
 	if (balance > 1 && bfl >= 0)
 		root = rightRotation(root);
-	//left right
 	else if (balance > 1 && bfl < 0) {
 		root->left = leftRotation(root->left);
 		root = rightRotation(root);
 	}
-	//right right
 	else if (balance < -1 && bfr <= 0)
 		root = leftRotation(root);
-	//right left
 	else if (balance < -1 && bfr>0) {
 		root->right = rightRotation(root->right);
 		root = leftRotation(root);
 	}
 }
-int main() {
 
+void seeIfIn(Node* root, int val) {
+	if (root != nullptr) {
+		if (root->val > val)
+			seeIfIn(root->left, val);
+		else if (root->val < val)
+			seeIfIn(root->right, val);
+		else
+			fout << "1\n";
+	}
+	else fout << "0\n";
+}
+void inorderBest(Node* root,int x,int y) {
+	if (root != nullptr) {
+		inorderBest(root->left, x, y);
+		if (root->val >= x && root->val<=y) fout << root->val<<' ';
+		inorderBest(root->right, x, y);
+	}
+}
+
+int succesor(Node* root, int val) {
+	if (root == NULL)
+		return 2147483647;
+	if (root->val == val)
+		return val;
+	if (val < root->val) {
+		return min(root->val, succesor(root->left, val));
+	}
+	else
+		return succesor(root->right, val);
+}
+
+int predecesor(Node* root, int val) {
+
+	if (root == NULL) {
+		return -2147483648;
+	}
+	if (root->val == val) {
+		return val;
+	}
+	if (val < root->val) {
+		return predecesor(root->left, val);
+	}
+	else
+		return max(root->val, predecesor(root->right, val));
+}
+
+void preorder(Node* root) {
+	if (root == NULL) {
+		return;
+	}
+	cout << root->val << ' ';
+	preorder(root->left);
+	preorder(root->right);
+}
+
+int main()
+{
 	int n;
 	fin >> n;
 
@@ -241,7 +225,7 @@ int main() {
 		}
 		else if (operatie == 3) {
 			fin >> x;
-			fout << seeIfIn(root, x) << '\n';
+			seeIfIn(root, x);
 		}
 		else if (operatie == 4) {
 			fin >> x;
