@@ -1,6 +1,11 @@
+
 #include <iostream>
 #include <fstream>
+
 using namespace std;
+
+ifstream fin("abce.in");
+ofstream fout("abce.out");
 
 struct Node {
 	int val;
@@ -10,25 +15,25 @@ struct Node {
 
 	Node(int x = 0) {
 		val = x;
-		left = nullptr;
-		right = nullptr;
+		left = NULL;
+		right = NULL;
 		height = 1;
-
 	}
 };
 
-int getHeight(Node*& root) {
-	if (root == nullptr) {
+int getHeight(Node* a) {
+	if (a == NULL) {
 		return 0;
 	}
-	return root->height;
+	return 1 + max(getHeight(a->left), getHeight(a->right));
 }
 
-int balanceFactor(Node*& root) {
-	if (root == nullptr) {
+
+int balanceFactor(Node* a) {
+	if (a == NULL) {
 		return 0;
 	}
-	return getHeight(root->left) - getHeight(root->right);
+	return getHeight(a->left) - getHeight(a->right);
 }
 
 Node* rightRotation(Node*& a) {
@@ -49,125 +54,208 @@ Node* leftRotation(Node*& a) {
 	return b;
 }
 
+
 void insert(Node*& root, int x) {
-	if (root == nullptr) {
+	if (root == NULL) {
 		root = new Node(x);
-		return;
 	}
-	if (x < root->val) 
-		insert(root->left, x);
-	else if (x > root->val)
-		insert(root->right, x);
-	
-	root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-	int bf = balanceFactor(root);
-
-	if (bf > 1) {
-		if (root->left->val > x)
-			root = rightRotation(root);
-		else {
-			root->left	= leftRotation(root->left);
-			root = rightRotation(root);
-		}
-	}
-	else if (bf < -1) {
-		if (root->right->val < x) {
-			root = leftRotation(root);
+	if (x < root->val) {
+		if (root->left == NULL) {
+			root->left = new Node(x);
+			return;
 		}
 		else {
-			root->right = rightRotation(root->right);
-			root = leftRotation(root);
+			insert(root->left, x);
 		}
 	}
-}
-
-Node* getMin(Node* root) {
-	if (root->left == nullptr)
-		return root;
-	return getMin(root->left);
-}
-
-Node* remove(Node* &root, int x) {
-	if (root == nullptr) {
-		return root;
-	}
-	else if (x < root->val) {
-		root->left = remove(root->left, x);
-	}
-	else if (x > root->val)
-		root->right = remove(root->right, x);
-	else {
-		if (root->left == nullptr) {
-			Node* aux = root->right;
-			root = nullptr;
-			return aux;
+	else if (x > root->val) {
+		if (root->right == NULL) {
+			root->right = new Node(x);
+			return;
 		}
-		else if (root->right == nullptr) {
-			Node* aux = root->left;
-			root = nullptr;
-			return aux;
+		else {
+			insert(root->right, x);
 		}
-		Node* aux = getMin(root->right);
-		root->val = aux->val;
-		root->right = remove(root->right, aux->val);
-	}
-	if (root == nullptr) {
-		return root;
 	}
 
 	root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-	int bf = balanceFactor(root);
+	int balance = balanceFactor(root);
 
-	if (bf > 1) {
-		if (root->left->val > x) {
-			root = rightRotation(root);
-			return root;
-		}
-		else {
-			root->left = leftRotation(root->left);
-			root = rightRotation(root);
-			return root;
-		}
-	}
-	else if (bf < -1) {
-		if (root->right->val < x) {
-			root = leftRotation(root);
-			return root;
-		}
-		else {
-			root->right = rightRotation(root->right);
-			root = leftRotation(root);
-			return root;
-		}
+	//left left
+	if (balance > 1 && x < root->left->val) {
+		root = rightRotation(root);
 	}
 
-}
+	//right right
+	else if (balance < -1 && x > root->right->val) {
+		root = leftRotation(root);
+	}
 
-void inorderBest(Node* root,int x,int y) {
-	if (root != nullptr) {
-		inorderBest(root->left, x, y);
-		if (root->val >= x && root->val<=y) cout << root->val;
-		inorderBest(root->right, x, y);
+	//left right
+	else if (balance > 1 && x > root->left->val) {
+		root->left = leftRotation(root->left);
+		root = rightRotation(root);
+	}
+	//right left
+	else if (balance < -1 && x < root->right->val) {
+		root->right = rightRotation(root->right);
+		root = leftRotation(root);
 	}
 }
 
-void preorder(Node* root) {
+int seeIfIn(Node* root, int val) {
+	if (root == NULL)
+		return 0;
+	if (root->val == val)
+		return 1;
+	if (root->val < val)
+		return seeIfIn(root->right, val);
+	return seeIfIn(root->left, val);
+}
+
+Node* minVal(Node* root) {
+	if (root->left == NULL)
+		return root;
+	return minVal(root->left);
+}
+
+Node* maxVal(Node* root) {
+	if (root->right == NULL)
+		return root;
+	return maxVal(root->right);
+}
+
+int succesor(Node* root, int val) {
+	if (root == NULL)
+		return 2147483647;
+	if (root->val == val)
+		return val;
+	if (val < root->val) {
+		return min(root->val, succesor(root->left, val));
+	}
+	else
+		return succesor(root->right, val);
+}
+
+int predecesor(Node* root, int val) {
+
+	if (root == NULL) {
+		return -2147483648;
+	}
+	if (root->val == val) {
+		return val;
+	}
+	if (val < root->val) {
+		return predecesor(root->left, val);
+	}
+	else
+		return max(root->val, predecesor(root->right, val));
+}
+void inorderBest(Node* root, int x, int y) {
 	if (root == NULL) {
 		return;
 	}
-	cout << root->val << ' ';
-	preorder(root->left);
-	preorder(root->right);
+	inorderBest(root->left, x, y);
+	if (root->val >= x && root->val <= y) fout << root->val << ' ';
+	inorderBest(root->right, x, y);
 }
 
-int main()
-{
-	Node* root = new Node(5);
-	insert(root, 3);
-	insert(root, 6);
-	insert(root, 2);
-	insert(root, 1);
 
-	preorder(root);
-	return 0;
+void remove(Node*& root, int val) {
+	if (root == NULL) {
+		return;
+	}
+
+	if (val < root->val) remove(root->left, val);
+	else if (val > root->val) remove(root->right, val);
+
+	//am gasit nodul pe care trebuie sa il stergem
+	else {
+		if (root->left == NULL || root->right == NULL)
+		{
+			Node* aux = NULL;
+			if (root->left != NULL) {
+				aux = root->left;
+			}
+			else if (root->right != NULL) {
+				aux = root->right;
+			}
+			if (aux == NULL) {
+				aux = root;
+				root = NULL;
+			}
+			else {
+				*root = *aux;
+			}
+
+			delete aux;
+		}
+		else {
+			Node* aux = minVal(root->right);
+			root->val = aux->val;
+			remove(root->right, aux->val);
+		}
+	}
+	if (root == NULL) {
+		return;
+	}
+
+	root->height = 1 + max(getHeight(root->left), getHeight(root->right));
+	int balance = balanceFactor(root);
+	int bfl = balanceFactor(root->left);
+	int bfr = balanceFactor(root->right);
+	//left left
+	if (balance > 1 && bfl >= 0)
+		root = rightRotation(root);
+	//left right
+	else if (balance > 1 && bfl < 0) {
+		root->left = leftRotation(root->left);
+		root = rightRotation(root);
+	}
+	//right right
+	else if (balance < -1 && bfr <= 0)
+		root = leftRotation(root);
+	//right left
+	else if (balance < -1 && bfr>0) {
+		root->right = rightRotation(root->right);
+		root = leftRotation(root);
+	}
+}
+int main() {
+
+	int n;
+	fin >> n;
+
+	int operatie;
+	int x, y;
+	Node* root = NULL;
+	for (int i = 0; i < n; i++) {
+		fin >> operatie;
+		if (operatie == 1) {
+			fin >> x;
+			insert(root, x);
+		}
+		else if (operatie == 2) {
+			fin >> x;
+			remove(root, x);
+		}
+		else if (operatie == 3) {
+			fin >> x;
+			fout << seeIfIn(root, x) << '\n';
+		}
+		else if (operatie == 4) {
+			fin >> x;
+			fout << predecesor(root, x) << '\n';
+		}
+		else if (operatie == 5) {
+			fin >> x;
+			fout << succesor(root, x) << '\n';
+		}
+		else {
+			fin >> x >> y;
+			inorderBest(root, x, y);
+			fout << '\n';
+		}
+
+	}
 }
