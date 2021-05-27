@@ -68,7 +68,7 @@ void insert(Node*& root, int x) {
 		if (root->left->val > x)
 			root = rightRotation(root);
 		else {
-			root->left	= leftRotation(root->left);
+			root->left = leftRotation(root->left);
 			root = rightRotation(root);
 		}
 	}
